@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Movie_data_model>
+
+@{
+    ViewData["Title"] = "Index";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if(ViewBag.pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+
+    int sno = 0;
+}
+
+<div class="row">
+    <div class="col-lg-10 offset-1">
+        <div class="row">
+            <div class="col-9 p-0 justify-content-end">
+                <form asp-controller="Movie" asp-action="Index">
+                    <span class="btn-group">
+                        <input type="text" name="SearchText" class="form-control" placeholder="Search key" />
+                        <input type="submit" class="p-1 m1-2btn btn-sm btn-info" value="Search" style="margin-left:5px"/>
+                    </span>
+                </form>
+            </div>
+            <div class="col-lg-3">
+                <a asp-controller="Movie" asp-action="Create" class="btn btn-outline-success float-end"><i class="bi bi-plus"></i>Add Movie</a>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Serial No</th>
+                    <th>Movie image</th>
+                    <th>@Html.DisplayNameFor(model => model.MovieName)</th>
+                    <th>@Html.DisplayNameFor(model => model.MovieDateTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.email)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model)
+                {
+                    sno = sno + 1;
+                    var data = item.Image;
+                    var base64 = Convert.ToBase64String(data);
+                    var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                    <tr>
+                        <td class="align-center" style="vertical-align:middle">@sno</td>
+                        <td class="align-center" style="vertical-align:middle"><img src="@imgsrc" style="width:200px; max-height:120px;" /></td>
+                        <td class="align-center" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.MovieName)</td>
+                        <td class="align-center" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.MovieDateTime)</td>
+                        <td class="align-center" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.email)</td>
+                        <td class="align-center" style="vertical-align:middle">
+                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Details</a>
+                            <a asp-controller="Movie" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-success">Update</a>
+                            <a asp-controller="Movie" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<partial name="Pager" model="@pager"></partial>
